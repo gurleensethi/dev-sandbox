@@ -1,0 +1,41 @@
+templates:
+  react:
+    name: react
+    image: node:latest
+    initCommand:
+      - bash
+      - "-c"
+      - |
+        npm create -y vite@latest playground-react-app -- --template react
+        cd playground-react-app
+        npm install
+        npm run dev -- --port 3000 --host
+    ports:
+      - containerPort: 3000
+        hostPort: 3000
+
+  golang:
+    name: golang
+    image: golang:latest
+    initCommand:
+      - bash
+      - "-c"
+      - |
+        mkdir -p /playground-golang
+        
+        go install -v golang.org/x/tools/gopls@latest
+        
+        cd /playground-golang
+        go mod init playground-golang        
+
+        touch main.go
+        cat > main.go << EOF
+        package main
+
+        func main() {}
+        EOF
+
+        sleep 100000
+    ports:
+      - containerPort: 8888
+        hostPort: 8888
