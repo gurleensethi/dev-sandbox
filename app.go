@@ -40,7 +40,7 @@ func (a *App) RunContainer(ctx context.Context) {
 		panic(err)
 	}
 
-	fmt.Printf("API Version: %s\n", ping.APIVersion)
+	logHeader(fmt.Sprintf("Docker API Version: %s", ping.APIVersion))
 
 	// >>> Delete existing container
 	containerName := fmt.Sprintf("dev_sandbox_%s", strings.Join(strings.Split(template.Name, " "), "_"))
@@ -49,7 +49,7 @@ func (a *App) RunContainer(ctx context.Context) {
 		panic(err)
 	}
 	if err == nil {
-		fmt.Printf("Removing existing '%s' container\n", containerName)
+		logInfo(fmt.Sprintf("Removing existing '%s' container.", containerName))
 		err := cli.ContainerRemove(ctx, existingContainer.ID, types.ContainerRemoveOptions{Force: true})
 		if err != nil {
 			panic(err)
@@ -70,6 +70,8 @@ func (a *App) RunContainer(ctx context.Context) {
 		}
 	}
 
+	logInfo(fmt.Sprintf("Creating container '%s'.", containerName))
+
 	container, err := cli.ContainerCreate(ctx, &container.Config{
 		Image:        template.Image,
 		Cmd:          template.InitCommand,
@@ -85,6 +87,8 @@ func (a *App) RunContainer(ctx context.Context) {
 	if err != nil {
 		panic(err)
 	}
+
+	logAlert("\n" + template.Messages.PostStart)
 }
 
 func (a *App) getContainerByName(ctx context.Context, cli *client.Client, name string) (types.Container, error) {

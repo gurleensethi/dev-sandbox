@@ -34,7 +34,6 @@ func main() {
 	app := NewApp(sandboxConfig)
 
 	app.RunContainer(ctx)
-
 }
 
 func parseSandboxFromConfig(config string) (SandboxConfig, error) {

@@ -8,6 +8,9 @@ type SandboxTemplate struct {
 		ConatinerPort string `yaml:"containerPort"`
 		HostPort      string `yaml:"hostPort"`
 	} `yaml:"ports"`
+	Messages struct {
+		PostStart string `yaml:"postStart"`
+	} `yaml:"messages"`
 }
 
 type SandboxConfig struct {

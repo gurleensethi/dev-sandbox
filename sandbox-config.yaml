@@ -13,6 +13,8 @@ templates:
     ports:
       - containerPort: 3000
         hostPort: 3000
+    messages:
+      postStart: Container might take a few seconds to be ready.
 
   golang:
     name: golang
@@ -22,9 +24,9 @@ templates:
       - "-c"
       - |
         mkdir -p /playground-golang
-        
+
         go install -v golang.org/x/tools/gopls@latest
-        
+
         cd /playground-golang
         go mod init playground-golang        
 
@@ -39,3 +41,42 @@ templates:
     ports:
       - containerPort: 8888
         hostPort: 8888
+    messages:
+      postStart: |
+        Container might take a few seconds to be ready.
+
+        > Open in VSCode:
+
+        1. Open VSCode.
+        2. Cmd+Shift+P
+        3. Search for 'Dev Containers: Attach to a running container...'
+        4. Select 'dev_container_golang' container.
+
+  nodejs:
+    name: nodejs
+    image: node:latest
+    initCommand:
+      - bash
+      - "-c"
+      - |
+        mkdir -p /node-playground
+        cd /node-playground
+        touch main.js
+        cat > main.js << EOF
+        console.log("Hello World");
+        EOF
+
+        sleep 100000
+    ports:
+      - containerPort: 4444
+        hostPort: 4444
+    messages:
+      postStart: |
+        Container might take a few seconds to be ready.
+
+        > Open in VSCode:
+
+        1. Open VSCode.
+        2. Cmd+Shift+P
+        3. Search for 'Dev Containers: Attach to a running container...'
+        4. Select 'dev_container_golang' container.
