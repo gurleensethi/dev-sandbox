@@ -2,10 +2,8 @@ package main
 
 import (
 	"bytes"
-	"context"
 	_ "embed"
 	"errors"
-	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v2"
@@ -19,13 +17,6 @@ var (
 var config string
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("Use the command line: dev-sandbox <template>\nExample: dev-sandbox react")
-		os.Exit(1)
-	}
-
-	ctx := context.Background()
-
 	sandboxConfig, err := parseSandboxFromConfig(config)
 	if err != nil {
 		panic(err)
@@ -36,7 +27,10 @@ func main() {
 		panic(err)
 	}
 
-	app.RunContainer(ctx)
+	err = app.BuildCli().Run(os.Args)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func parseSandboxFromConfig(config string) (SandboxConfig, error) {

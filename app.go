@@ -11,6 +11,7 @@ import (
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
+	"github.com/urfave/cli/v2"
 )
 
 type App struct {
@@ -19,19 +20,39 @@ type App struct {
 }
 
 func NewApp(config SandboxConfig) (*App, error) {
-	cli, err := client.NewClientWithOpts(client.FromEnv)
+	dockerCli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		return nil, err
 	}
 
 	return &App{
 		sandboxConfig: config,
-		dockerCli:     cli,
+		dockerCli:     dockerCli,
 	}, nil
 }
 
-func (a *App) RunContainer(ctx context.Context) {
-	template, ok := a.sandboxConfig.Templates[os.Args[1]]
+func (a *App) BuildCli() *cli.App {
+	return &cli.App{
+		Name: "dev-sandbox",
+		Commands: []*cli.Command{
+			{
+				Name:    "list",
+				Aliases: []string{"ls"},
+				Usage:   "list all the dev sandboxes",
+				Action:  a.ListDevSandboxes,
+			},
+			{
+				Name:    "run",
+				Aliases: []string{"r"},
+				Usage:   "run a sandbox",
+				Action:  a.RunSandbox,
+			},
+		},
+	}
+}
+
+func (a *App) RunContainer(ctx context.Context, templateName string) {
+	template, ok := a.sandboxConfig.Templates[templateName]
 	if !ok {
 		fmt.Printf("Template '%s' doesn't exists.\n", os.Args[1])
 		os.Exit(1)
@@ -51,7 +72,7 @@ func (a *App) RunContainer(ctx context.Context) {
 		panic(err)
 	}
 	if err == nil {
-		logInfo(fmt.Sprintf("Removing existing '%s' container.", containerName))
+		logMessage(fmt.Sprintf("Removing existing '%s' container.", containerName), colorYellow)
 		err := a.dockerCli.ContainerRemove(ctx, existingContainer.ID, types.ContainerRemoveOptions{Force: true})
 		if err != nil {
 			panic(err)
@@ -59,7 +80,7 @@ func (a *App) RunContainer(ctx context.Context) {
 	}
 
 	// >>> Create and start container
-	logInfo(fmt.Sprintf("Creating container '%s'.", containerName))
+	logMessage(fmt.Sprintf("Creating container '%s'.", containerName), colorYellow)
 
 	exposedPorts := nat.PortSet{}
 	portBindings := nat.PortMap{}
@@ -72,7 +93,7 @@ func (a *App) RunContainer(ctx context.Context) {
 				HostPort: port.HostPort,
 			},
 		}
-		logInfo(fmt.Sprintf("Mapping Container Port %s to Host Port %s.", port.ConatinerPort, port.HostPort))
+		logMessage(fmt.Sprintf("Mapping Container Port %s to Host Port %s.", port.ConatinerPort, port.HostPort), colorYellow)
 	}
 
 	container, err := a.dockerCli.ContainerCreate(ctx, &container.Config{
@@ -80,7 +101,7 @@ func (a *App) RunContainer(ctx context.Context) {
 		Cmd:          template.InitCommand,
 		ExposedPorts: exposedPorts,
 		Labels: map[string]string{
-			"dev-sandbox-template": template.Name,
+			"dev.sandbox.template": template.Name,
 		},
 	}, &container.HostConfig{
 		PortBindings: portBindings,
@@ -89,16 +110,16 @@ func (a *App) RunContainer(ctx context.Context) {
 		panic(err)
 	}
 
-	logInfo(fmt.Sprintf("Starting Container '%s'.", containerName))
+	logMessage(fmt.Sprintf("Starting Container '%s'.", containerName), colorYellow)
 
 	err = a.dockerCli.ContainerStart(ctx, container.ID, types.ContainerStartOptions{})
 	if err != nil {
 		panic(err)
 	}
 
-	logInfo(fmt.Sprintf("Container '%s' started successfully.", containerName))
+	logMessage(fmt.Sprintf("Container '%s' started successfully.", containerName), colorYellow)
 
-	logAlert("\n" + template.Messages.PostStart)
+	logMessage("\n"+template.Messages.PostStart, colorOrgange)
 }
 
 func (a *App) getContainerByName(ctx context.Context, cli *client.Client, name string) (types.Container, error) {
@@ -118,4 +139,31 @@ func (a *App) getContainerByName(ctx context.Context, cli *client.Client, name s
 	}
 
 	return containers[0], nil
+}
+
+func (a *App) ListDevSandboxes(cliCtx *cli.Context) error {
+	conatiners, err := a.dockerCli.ContainerList(cliCtx.Context, types.ContainerListOptions{
+		Filters: filters.NewArgs(filters.KeyValuePair{
+			Key:   "label",
+			Value: "dev.sandbox.template",
+		}),
+	})
+	if err != nil {
+		return err
+	}
+
+	for _, c := range conatiners {
+		templateName := c.Labels["dev.sandbox.template"]
+		logMessage(fmt.Sprintf("%s %s", strings.Join(c.Names, " "), templateName), colorYellow)
+	}
+
+	return nil
+}
+
+func (a *App) RunSandbox(cliCtx *cli.Context) error {
+	template := cliCtx.Args().First()
+
+	a.RunContainer(cliCtx.Context, template)
+
+	return nil
 }

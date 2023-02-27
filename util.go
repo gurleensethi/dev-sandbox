@@ -7,6 +7,10 @@ import (
 )
 
 var (
+	colorPurple  = lipgloss.Color("#7D56F4")
+	colorYellow  = lipgloss.Color("#FFFF00")
+	colorOrgange = lipgloss.Color("#FFAA33")
+
 	header = lipgloss.NewStyle().
 		Bold(true).
 		Border(lipgloss.RoundedBorder()).
@@ -26,10 +30,10 @@ func logHeader(s string) {
 	fmt.Println(header.SetString(s))
 }
 
-func logInfo(s string) {
-	fmt.Println(info.SetString(s))
-}
+func logMessage(s string, color lipgloss.Color) {
+	style := lipgloss.NewStyle().
+		Foreground(color).
+		SetString(s)
 
-func logAlert(s string) {
-	fmt.Println(alert.SetString(s))
+	fmt.Println(style)
 }
