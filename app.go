@@ -140,12 +140,12 @@ func (a *App) ListDevSandboxes(ctx context.Context) error {
 	for _, c := range containers {
 		templateName := c.Labels["dev.sandbox.template"]
 
-		textStyle := lipgloss.NewStyle().Foreground(colorYellow)
+		textStyle := lipgloss.NewStyle()
 
 		line := strings.Join(
 			[]string{
-				textStyle.SetString(strings.Join(c.Names, " ")).String(),
-				textStyle.SetString("[" + templateName + "]").String(),
+				textStyle.Foreground(colorYellow).SetString(strings.Join(c.Names, " ")).String(),
+				textStyle.Foreground(colorGreen).SetString("[template:'" + templateName + "']").String(),
 			}, "\t")
 
 		writer.Write([]byte(line + "\n"))

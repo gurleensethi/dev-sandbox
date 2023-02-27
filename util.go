@@ -10,6 +10,7 @@ var (
 	colorPurple  = lipgloss.Color("#7D56F4")
 	colorYellow  = lipgloss.Color("#FFFF00")
 	colorOrgange = lipgloss.Color("#FFAA33")
+	colorGreen   = lipgloss.Color("#04B575")
 
 	header = lipgloss.NewStyle().
 		Bold(true).
