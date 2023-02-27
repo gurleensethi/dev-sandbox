@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"text/tabwriter"
 
+	"github.com/charmbracelet/lipgloss"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
@@ -121,7 +123,9 @@ func (a *App) getContainerByName(ctx context.Context, cli *client.Client, name s
 }
 
 func (a *App) ListDevSandboxes(ctx context.Context) error {
-	conatiners, err := a.dockerCli.ContainerList(ctx, types.ContainerListOptions{
+	writer := tabwriter.NewWriter(os.Stdout, 2, 2, 2, ' ', tabwriter.TabIndent)
+
+	containers, err := a.dockerCli.ContainerList(ctx, types.ContainerListOptions{
 		Filters: filters.NewArgs(filters.KeyValuePair{
 			Key:   "label",
 			Value: "dev.sandbox.template",
@@ -131,9 +135,25 @@ func (a *App) ListDevSandboxes(ctx context.Context) error {
 		return err
 	}
 
-	for _, c := range conatiners {
+	logHeader(fmt.Sprintf("Total Sandboxes: %d", len(containers)))
+
+	for _, c := range containers {
 		templateName := c.Labels["dev.sandbox.template"]
-		logMessage(fmt.Sprintf("%s %s", strings.Join(c.Names, " "), templateName), colorYellow)
+
+		textStyle := lipgloss.NewStyle().Foreground(colorYellow)
+
+		line := strings.Join(
+			[]string{
+				textStyle.SetString(strings.Join(c.Names, " ")).String(),
+				textStyle.SetString("[" + templateName + "]").String(),
+			}, "\t")
+
+		writer.Write([]byte(line + "\n"))
+	}
+
+	err = writer.Flush()
+	if err != nil {
+		return err
 	}
 
 	return nil
