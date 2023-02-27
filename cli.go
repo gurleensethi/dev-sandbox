@@ -26,6 +26,13 @@ func BuildCli(a *App) *cli.App {
 					return nil
 				},
 			},
+			{
+				Name:  "purge",
+				Usage: "delete running sandboxes",
+				Action: func(ctx *cli.Context) error {
+					return a.PurgeDevSandboxes(ctx.Context)
+				},
+			},
 		},
 	}
 }

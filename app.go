@@ -138,3 +138,28 @@ func (a *App) ListDevSandboxes(ctx context.Context) error {
 
 	return nil
 }
+
+func (a *App) PurgeDevSandboxes(ctx context.Context) error {
+	conatiners, err := a.dockerCli.ContainerList(ctx, types.ContainerListOptions{
+		Filters: filters.NewArgs(filters.KeyValuePair{
+			Key:   "label",
+			Value: "dev.sandbox.template",
+		}),
+	})
+	if err != nil {
+		return err
+	}
+
+	for _, c := range conatiners {
+		logMessage(fmt.Sprintf("Removing container %s", strings.Join(c.Names, " ")), colorYellow)
+
+		err := a.dockerCli.ContainerRemove(ctx, c.ID, types.ContainerRemoveOptions{
+			Force: true,
+		})
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
