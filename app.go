@@ -11,7 +11,6 @@ import (
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
-	"github.com/urfave/cli/v2"
 )
 
 type App struct {
@@ -29,26 +28,6 @@ func NewApp(config SandboxConfig) (*App, error) {
 		sandboxConfig: config,
 		dockerCli:     dockerCli,
 	}, nil
-}
-
-func (a *App) BuildCli() *cli.App {
-	return &cli.App{
-		Name: "dev-sandbox",
-		Commands: []*cli.Command{
-			{
-				Name:    "list",
-				Aliases: []string{"ls"},
-				Usage:   "list all the dev sandboxes",
-				Action:  a.ListDevSandboxes,
-			},
-			{
-				Name:    "run",
-				Aliases: []string{"r"},
-				Usage:   "run a sandbox",
-				Action:  a.RunSandbox,
-			},
-		},
-	}
 }
 
 func (a *App) RunContainer(ctx context.Context, templateName string) {
@@ -141,8 +120,8 @@ func (a *App) getContainerByName(ctx context.Context, cli *client.Client, name s
 	return containers[0], nil
 }
 
-func (a *App) ListDevSandboxes(cliCtx *cli.Context) error {
-	conatiners, err := a.dockerCli.ContainerList(cliCtx.Context, types.ContainerListOptions{
+func (a *App) ListDevSandboxes(ctx context.Context) error {
+	conatiners, err := a.dockerCli.ContainerList(ctx, types.ContainerListOptions{
 		Filters: filters.NewArgs(filters.KeyValuePair{
 			Key:   "label",
 			Value: "dev.sandbox.template",
@@ -156,14 +135,6 @@ func (a *App) ListDevSandboxes(cliCtx *cli.Context) error {
 		templateName := c.Labels["dev.sandbox.template"]
 		logMessage(fmt.Sprintf("%s %s", strings.Join(c.Names, " "), templateName), colorYellow)
 	}
-
-	return nil
-}
-
-func (a *App) RunSandbox(cliCtx *cli.Context) error {
-	template := cliCtx.Args().First()
-
-	a.RunContainer(cliCtx.Context, template)
 
 	return nil
 }

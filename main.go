@@ -27,7 +27,7 @@ func main() {
 		panic(err)
 	}
 
-	err = app.BuildCli().Run(os.Args)
+	err = BuildCli(app).Run(os.Args)
 	if err != nil {
 		panic(err)
 	}
