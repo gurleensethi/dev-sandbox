@@ -31,7 +31,10 @@ func main() {
 		panic(err)
 	}
 
-	app := NewApp(sandboxConfig)
+	app, err := NewApp(sandboxConfig)
+	if err != nil {
+		panic(err)
+	}
 
 	app.RunContainer(ctx)
 }

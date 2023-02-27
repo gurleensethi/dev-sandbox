@@ -9,8 +9,10 @@ import (
 var (
 	header = lipgloss.NewStyle().
 		Bold(true).
-		Foreground(lipgloss.Color("#FAFAFA")).
-		Background(lipgloss.Color("#7D56F4")).
+		Border(lipgloss.RoundedBorder()).
+		// BorderBackground(lipgloss.Color("#7D56F4")).
+		Foreground(lipgloss.Color("#7D56F4")).
+		// Background(lipgloss.Color("#7D56F4")).
 		MarginBottom(1)
 
 	info = lipgloss.NewStyle().
