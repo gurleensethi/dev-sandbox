@@ -16,4 +16,4 @@ dev-sandbox list
 
 ```
 
-<img alt="Welcome to VHS" src="https://raw.githubusercontent.com/gurleensethi/dev-sandbox/main/out.gif" width="600" />
+<img alt="Welcome to VHS" src="https://raw.githubusercontent.com/gurleensethi/dev-sandbox/main/out.gif" />
