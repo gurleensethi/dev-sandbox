@@ -1,5 +1,7 @@
 # dev-sandbox
 
+Quickly run predefined sandbox environments inside docker containers.
+
 # Install
 
 ```bash
