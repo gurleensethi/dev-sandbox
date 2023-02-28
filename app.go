@@ -142,10 +142,15 @@ func (a *App) ListDevSandboxes(ctx context.Context) error {
 
 		textStyle := lipgloss.NewStyle()
 
+		meta := []string{
+			"template:" + templateName,
+		}
+		metaLine := fmt.Sprintf("[%s]", strings.Join(meta, " "))
+
 		line := strings.Join(
 			[]string{
 				textStyle.Foreground(colorYellow).SetString(strings.Join(c.Names, " ")).String(),
-				textStyle.Foreground(colorGreen).SetString("[template:'" + templateName + "']").String(),
+				textStyle.Foreground(colorGreen).SetString(metaLine).String(),
 			}, "\t")
 
 		writer.Write([]byte(line + "\n"))
