@@ -4,6 +4,10 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+const (
+	FlagDisablePorts = "disable-ports"
+)
+
 func BuildCli(a *App) *cli.App {
 	return &cli.App{
 		Name: "dev-sandbox",
@@ -19,11 +23,19 @@ func BuildCli(a *App) *cli.App {
 			{
 				Name:    "run",
 				Aliases: []string{"r"},
-				Usage:   "run a sandbox",
-				Action: func(ctx *cli.Context) error {
-					template := ctx.Args().First()
-					a.RunContainer(ctx.Context, template)
-					return nil
+				Flags: []cli.Flag{
+					&cli.BoolFlag{
+						Name:  FlagDisablePorts,
+						Usage: "don't expose any ports on the container",
+						Value: false,
+					},
+				},
+				Usage: "run a sandbox",
+				Action: func(cCtx *cli.Context) error {
+					template := cCtx.Args().First()
+					return a.RunContainer(cCtx.Context, template, RunContainerOpts{
+						DisablePorts: cCtx.Bool(FlagDisablePorts),
+					})
 				},
 			},
 			{

@@ -14,7 +14,15 @@ templates:
       - containerPort: 3000
         hostPort: 3000
     messages:
-      postStart: Container might take a few seconds to be ready.
+      postStart: |
+        Container might take a few seconds to be ready.
+
+        > Open in VSCode:
+
+        1. Open VSCode.
+        2. Cmd+Shift+P
+        3. Search for 'Dev Containers: Attach to a running container...'
+        4. Select '{{.ContainerName}}' container.
 
   golang:
     name: golang
@@ -50,7 +58,7 @@ templates:
         1. Open VSCode.
         2. Cmd+Shift+P
         3. Search for 'Dev Containers: Attach to a running container...'
-        4. Select 'dev_container_golang' container.
+        4. Select '{{.ContainerName}}' container.
 
   nodejs:
     name: nodejs
@@ -79,4 +87,4 @@ templates:
         1. Open VSCode.
         2. Cmd+Shift+P
         3. Search for 'Dev Containers: Attach to a running container...'
-        4. Select 'dev_container_golang' container.
+        4. Select '{{.ContainerName}}' container.
