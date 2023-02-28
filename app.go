@@ -83,6 +83,7 @@ func (a *App) RunContainer(ctx context.Context, templateName string, opts RunCon
 			"dev.sandbox.id":       uniqueID,
 			"dev.sandbox.template": sandboxTemplate.Name,
 		},
+		Env: []string{"POSTGRES_PASSWORD=postgres"},
 	}, &container.HostConfig{
 		PortBindings: portBindings,
 	}, nil, nil, containerName)

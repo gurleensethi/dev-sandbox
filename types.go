@@ -4,6 +4,7 @@ type SandboxTemplate struct {
 	Name        string   `yaml:"name"`
 	Image       string   `yaml:"image"`
 	InitCommand []string `yaml:"initCommand"`
+	Environment []string `yaml:"environment"`
 	Ports       []struct {
 		ConatinerPort string `yaml:"containerPort"`
 		HostPort      string `yaml:"hostPort"`

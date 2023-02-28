@@ -88,3 +88,28 @@ templates:
         2. Cmd+Shift+P
         3. Search for 'Dev Containers: Attach to a running container...'
         4. Select '{{.ContainerName}}' container.
+
+  postgres:
+    name: postgres
+    image: postgres:latest
+    ports:
+      - containerPort: 5432
+        hostPort: 5432
+    environment:
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=postgres"
+      - "POSTGRES_DB=postgres"
+    messages:
+      postStart: |
+        Postgres User: postgres
+        Postgres Password: postgres
+        Postgres Database: postgres
+
+        Container might take a few seconds to be ready.
+
+        > Open in VSCode:
+
+        1. Open VSCode.
+        2. Cmd+Shift+P
+        3. Search for 'Dev Containers: Attach to a running container...'
+        4. Select '{{.ContainerName}}' container.
