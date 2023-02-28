@@ -15,3 +15,5 @@ dev-sandbox run [nodejs|golang|react]
 dev-sandbox list
 
 ```
+
+<img alt="Welcome to VHS" src="https://raw.githubusercontent.com/gurleensethi/dev-sandbox/main/out.gif" width="600" />
