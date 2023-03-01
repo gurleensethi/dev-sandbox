@@ -24,7 +24,7 @@ type App struct {
 }
 
 func NewApp(config SandboxConfig) (*App, error) {
-	dockerCli, err := client.NewClientWithOpts(client.FromEnv)
+	dockerCli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		return nil, err
 	}
