@@ -4,6 +4,7 @@ import (
 	"bytes"
 	_ "embed"
 	"errors"
+	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v2"
@@ -29,7 +30,12 @@ func main() {
 
 	err = BuildCli(app).Run(os.Args)
 	if err != nil {
-		panic(err)
+		if os.Getenv("PANIC_ON_ERROR") == "1" {
+			panic(err)
+		}
+
+		fmt.Println(err.Error())
+		os.Exit(1)
 	}
 }
 

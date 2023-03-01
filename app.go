@@ -42,7 +42,7 @@ type RunContainerOpts struct {
 func (a *App) RunContainer(ctx context.Context, templateName string, opts RunContainerOpts) error {
 	sandboxTemplate, ok := a.sandboxConfig.Templates[templateName]
 	if !ok {
-		fmt.Printf("Template '%s' doesn't exists.\n", os.Args[1])
+		fmt.Printf("Sandbox template '%s' doesn't exists.\n", os.Args[1])
 		os.Exit(1)
 	}
 
@@ -83,7 +83,7 @@ func (a *App) RunContainer(ctx context.Context, templateName string, opts RunCon
 			"dev.sandbox.id":       uniqueID,
 			"dev.sandbox.template": sandboxTemplate.Name,
 		},
-		Env: []string{"POSTGRES_PASSWORD=postgres"},
+		Env: sandboxTemplate.Environment,
 	}, &container.HostConfig{
 		PortBindings: portBindings,
 	}, nil, nil, containerName)

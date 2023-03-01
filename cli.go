@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/urfave/cli/v2"
 )
 
@@ -32,6 +34,10 @@ func BuildCli(a *App) *cli.App {
 				},
 				Usage: "run a sandbox",
 				Action: func(cCtx *cli.Context) error {
+					if cCtx.Args().Len() == 0 {
+						return fmt.Errorf("no sandbox template specified provided")
+					}
+
 					template := cCtx.Args().First()
 					return a.RunContainer(cCtx.Context, template, RunContainerOpts{
 						DisablePorts: cCtx.Bool(FlagDisablePorts),
