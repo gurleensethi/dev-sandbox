@@ -43,7 +43,7 @@ type RunContainerOpts struct {
 func (a *App) RunContainer(ctx context.Context, templateName string, opts RunContainerOpts) error {
 	sandboxTemplate, ok := a.sandboxConfig.Templates[templateName]
 	if !ok {
-		fmt.Printf("Sandbox template '%s' doesn't exists.\n", os.Args[1])
+		fmt.Printf("Sandbox template '%s' doesn't exists\n", os.Args[1])
 		os.Exit(1)
 	}
 
@@ -58,7 +58,7 @@ func (a *App) RunContainer(ctx context.Context, templateName string, opts RunCon
 	containerName := fmt.Sprintf("dev-sandbox-%s-%s", strings.Join(strings.Split(sandboxTemplate.Name, " "), "_"), uniqueID)
 
 	// >>>>> Create and start container
-	logMessage(fmt.Sprintf("Creating container '%s'.", containerName), colorYellow)
+	logMessage(fmt.Sprintf("Creating container '%s'", containerName), colorYellow)
 
 	exposedPorts := nat.PortSet{}
 	portBindings := nat.PortMap{}
@@ -72,7 +72,7 @@ func (a *App) RunContainer(ctx context.Context, templateName string, opts RunCon
 					HostPort: port.HostPort,
 				},
 			}
-			logMessage(fmt.Sprintf("Mapping Container Port %s to Host Port %s.", port.ConatinerPort, port.HostPort), colorYellow)
+			logMessage(fmt.Sprintf("Mapping Container Port %s to Host Port %s", port.ConatinerPort, port.HostPort), colorYellow)
 		}
 	}
 
@@ -93,7 +93,7 @@ func (a *App) RunContainer(ctx context.Context, templateName string, opts RunCon
 		return err
 	}
 
-	logMessage(fmt.Sprintf("Starting Container '%s'.", containerName), colorYellow)
+	logMessage(fmt.Sprintf("Starting Container '%s'", containerName), colorYellow)
 
 	err = a.dockerCli.ContainerStart(ctx, container.ID, types.ContainerStartOptions{})
 	if err != nil {
@@ -101,7 +101,7 @@ func (a *App) RunContainer(ctx context.Context, templateName string, opts RunCon
 		return err
 	}
 
-	logMessage(fmt.Sprintf("Container '%s' started successfully.", containerName), colorYellow)
+	logMessage(fmt.Sprintf("Container '%s' started successfully", containerName), colorYellow)
 
 	// >>>>> Render post run message using go templates.
 	t, err := template.New("post_message_render").Parse(sandboxTemplate.Messages.PostStart)

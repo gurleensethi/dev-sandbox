@@ -64,6 +64,65 @@ templates:
         3. Search for 'Dev Containers: Attach to a running container...'
         4. Select '{{.ContainerName}}' container.
 
+  go-web-app:
+    name: go-web-app
+    image: golang:latest
+    initCommand:
+      - bash
+      - "-c"
+      - |
+        mkdir -p /playground-golang
+
+        go install -v golang.org/x/tools/gopls@latest
+        go install github.com/cosmtrek/air@latest
+
+        cd /playground-golang
+        go mod init playground-golang
+
+        touch main.go
+        cat > main.go << EOF
+        package main
+
+        import (
+          "fmt"
+          "net/http"
+          "os"
+        )
+
+        func main() {
+          http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+            w.Header().Set("Content-Type", "application/json")
+
+            _, err := w.Write([]byte("{ \"message\": \"Hello World\" }"))
+            if err != nil {
+              fmt.Println(err)
+            }
+          })
+
+          addr := fmt.Sprintf(":%v", os.Getenv("HTTP_PORT"))
+          http.ListenAndServe(addr, nil)
+        }
+        EOF
+
+        air
+    ports:
+      - containerPort: 9999
+        hostPort: 9999
+    environment:
+      - "HTTP_PORT=9999"
+    messages:
+      postStart: |
+        Container might take a few seconds to be ready.
+
+        Project created in `/playground-golang` folder.
+
+        > Open in VSCode:
+
+        1. Open VSCode
+        2. Cmd+Shift+P
+        3. Search for 'Dev Containers: Attach to a running container...'
+        4. Select '{{.ContainerName}}' container
+
   nodejs:
     name: nodejs
     image: node:latest
