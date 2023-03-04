@@ -25,7 +25,7 @@ dev-sandbox list
 | Name | Description |
 | ---- | ----------- |
 | react | React application generated using vite.
-| golang |  |
+| golang | Go application (with module initalized).
 | go-web-app |  |
-| nodejs |  |
-| postgres |  |
+| nodejs | Nodejs environment.
+| postgres | Postgres database.
