@@ -14,9 +14,15 @@ jobs:
 
       - name: Replace Templates
         run: |
-          echo $PWD
-          ls
+          # Explanation of yq command
+          # ---
+          # 1. Flag '-M' means no colored output.
+          # 2. '.templates[]' acts as a for loop for the keys inside it.
+          # 3. 'key' grabs the key for the item in the for loop running in step 2.
+          # 4. '.description // ""' means of description is null return an empty string.
+
           export TEMPLATES=$(yq -M eval '.templates[] | "| " + key + " | " + .description // "" + " |"' sandbox-config.yaml)
+
           envsubst < _README.md > README.md
 
       - name: Commit & Push

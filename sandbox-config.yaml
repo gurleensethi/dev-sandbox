@@ -27,6 +27,7 @@ templates:
 
   golang:
     name: golang
+    description: Go application (with module initalized).
     image: golang:latest
     initCommand:
       - bash
@@ -127,6 +128,7 @@ templates:
   nodejs:
     name: nodejs
     image: node:latest
+    description: Nodejs environment.
     initCommand:
       - bash
       - "-c"
@@ -156,6 +158,7 @@ templates:
   postgres:
     name: postgres
     image: postgres:latest
+    description: Postgres database.
     ports:
       - containerPort: 5432
         hostPort: 5432
