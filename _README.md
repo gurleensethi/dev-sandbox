@@ -18,7 +18,7 @@ Run the `dev-sandbox doctor` command to check for system requirements.
 
 <img alt="Welcome to VHS" src="https://raw.githubusercontent.com/gurleensethi/dev-sandbox/main/out.gif" />
 
-# Templates
+# Sandbox Templates
 
 | Name | Description |
 | ---- | ----------- |
