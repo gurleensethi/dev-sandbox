@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os/exec"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -25,6 +27,8 @@ var (
 
 	alert = lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#FFAA33"))
+
+	ErrCommandNotFound = errors.New("command not found")
 )
 
 func logHeader(s string) {
@@ -37,4 +41,12 @@ func logMessage(s string, color lipgloss.Color) {
 		SetString(s)
 
 	fmt.Println(style)
+}
+
+func hasCommand(cmd string) error {
+	err := exec.Command("which", cmd).Run()
+	if err != nil {
+		return ErrCommandNotFound
+	}
+	return nil
 }

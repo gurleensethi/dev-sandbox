@@ -15,6 +15,13 @@ func BuildCli(a *App) *cli.App {
 		Name: "dev-sandbox",
 		Commands: []*cli.Command{
 			{
+				Name:  "doctor",
+				Usage: "check for all requirements on your system",
+				Action: func(ctx *cli.Context) error {
+					return a.Doctor(ctx.Context)
+				},
+			},
+			{
 				Name:    "list-templates",
 				Aliases: []string{"ls-templates"},
 				Action: func(ctx *cli.Context) error {

@@ -267,3 +267,25 @@ func (a *App) ListTemplates(ctx context.Context) error {
 
 	return nil
 }
+
+func (a *App) Doctor(ctx context.Context) error {
+	commands := map[string]string{
+		"docker": "Visit 'https://www.docker.com/products/docker-desktop/' to install Docker.",
+		"code":   "Visit 'https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line' to install VSCode shell command.",
+	}
+
+	for cmd, instructions := range commands {
+		err := hasCommand(cmd)
+		if err != nil {
+			if err == ErrCommandNotFound {
+				logMessage(fmt.Sprintf("Command `%s` not found! %s", cmd, instructions), colorYellow)
+			} else {
+				return err
+			}
+		} else {
+			logMessage(fmt.Sprintf("Command `%s` found.", cmd), colorGreen)
+		}
+	}
+
+	return nil
+}
