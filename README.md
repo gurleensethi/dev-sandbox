@@ -12,7 +12,7 @@ go install github.com/gurleensethi/dev-sandbox@latest
 
 ```text
 NAME:
-   dev-sandbox - A new cli application
+   dev-sandbox - run predefined sandbox templates in docker containers
 
 USAGE:
    dev-sandbox [global options] command [command options] [arguments...]
