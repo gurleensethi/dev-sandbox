@@ -2,6 +2,7 @@ templates:
   react:
     name: react
     image: node:latest
+    description: React application generated using vite.
     initCommand:
       - bash
       - "-c"

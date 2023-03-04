@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"text/tabwriter"
 	"text/template"
@@ -229,6 +230,37 @@ func (a *App) DeleteSandbox(ctx context.Context, opts DeleteSandboxOpts) error {
 	err = a.dockerCli.ContainerRemove(ctx, container.ID, types.ContainerRemoveOptions{
 		Force: true,
 	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (a *App) ListTemplates(ctx context.Context) error {
+	writer := tabwriter.NewWriter(os.Stdin, 4, 4, 4, ' ', 0)
+
+	logHeader(fmt.Sprintf("Total Sandbox Templates: %d", len(a.sandboxConfig.Templates)))
+
+	fmt.Fprintln(writer, "Name\tDescription")
+	fmt.Fprintln(writer, "----\t-----------")
+
+	rows := []string{}
+
+	for key, value := range a.sandboxConfig.Templates {
+		rows = append(rows, strings.Join([]string{key, value.Description}, "\t"))
+	}
+
+	sort.Strings(rows)
+
+	for _, row := range rows {
+		_, err := fmt.Fprintln(writer, row)
+		if err != nil {
+			return err
+		}
+	}
+
+	err := writer.Flush()
 	if err != nil {
 		return err
 	}

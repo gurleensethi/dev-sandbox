@@ -3,6 +3,7 @@ package main
 type SandboxTemplate struct {
 	Name        string   `yaml:"name"`
 	Image       string   `yaml:"image"`
+	Description string   `yaml:"description"`
 	InitCommand []string `yaml:"initCommand"`
 	Environment []string `yaml:"environment"`
 	Ports       []struct {
