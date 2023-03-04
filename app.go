@@ -81,8 +81,9 @@ func (a *App) RunContainer(ctx context.Context, templateName string, opts RunCon
 		Cmd:          sandboxTemplate.InitCommand,
 		ExposedPorts: exposedPorts,
 		Labels: map[string]string{
-			"dev.sandbox.id":       uniqueID,
-			"dev.sandbox.template": sandboxTemplate.Name,
+			"dev.sandbox.container": "true",
+			"dev.sandbox.id":        uniqueID,
+			"dev.sandbox.template":  sandboxTemplate.Name,
 		},
 		Env: sandboxTemplate.Environment,
 	}, &container.HostConfig{
@@ -198,10 +199,16 @@ func (a *App) DeleteSandbox(ctx context.Context, opts DeleteSandboxOpts) error {
 	}
 
 	containers, err := a.dockerCli.ContainerList(ctx, types.ContainerListOptions{
-		Filters: filters.NewArgs(filters.KeyValuePair{
-			Key:   "name",
-			Value: "^" + opts.SandboxName + "$",
-		}),
+		Filters: filters.NewArgs(
+			filters.KeyValuePair{
+				Key:   "name",
+				Value: "^" + opts.SandboxName + "$",
+			},
+			filters.KeyValuePair{
+				Key:   "label",
+				Value: "dev.sandbox.container",
+			},
+		),
 	})
 	if err != nil {
 		return err
