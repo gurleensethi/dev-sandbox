@@ -18,6 +18,7 @@ USAGE:
    dev-sandbox [global options] command [command options] [arguments...]
 
 COMMANDS:
+   doctor                        check for all requirements on your system
    list-templates, ls-templates  
    list, ls                      list all the dev sandboxes
    run, r                        run a sandbox
