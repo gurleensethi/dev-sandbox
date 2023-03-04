@@ -108,21 +108,23 @@ func (a *App) RunSandbox(ctx context.Context, templateName string, opts RunSandb
 	logMessage(fmt.Sprintf("Container '%s' started successfully...", containerName), colorGreen)
 
 	// >>>>> Open VSCode attaching the remote container
-	if opts.OpenVSCode && sandboxTemplate.VSCodeConfig != nil {
-		logMessage("Opening container application in VSCode...", colorGreen)
-		applicationPath := path.Join("/", sandboxTemplate.VSCodeConfig.ApplicationFolder)
+	if opts.OpenVSCode {
+		if sandboxTemplate.VSCodeConfig != nil {
+			logMessage("Opening container application in VSCode...", colorGreen)
+			applicationPath := path.Join("/", sandboxTemplate.VSCodeConfig.ApplicationFolder)
 
-		if hasCommand("code") == nil {
-			err := exec.Command(
-				"code",
-				"--folder-uri",
-				fmt.Sprintf("vscode-remote://attached-container+%x%s", containerName, applicationPath),
-			).Run()
-			if err != nil {
-				return err
+			if hasCommand("code") == nil {
+				err := exec.Command(
+					"code",
+					"--folder-uri",
+					fmt.Sprintf("vscode-remote://attached-container+%x%s", containerName, applicationPath),
+				).Run()
+				if err != nil {
+					return err
+				}
+			} else {
+				logMessage("Unable to open container in VSCode, 'code' command not found!", colorYellow)
 			}
-		} else {
-			logMessage("Unable to open container in VSCode, 'code' command not found!", colorYellow)
 		}
 	}
 
