@@ -29,6 +29,8 @@ templates:
     name: golang
     description: Go application (with module initalized).
     image: golang:latest
+    vscodeConfig:
+      applicationFolder: /playground-golang
     initCommand:
       - bash
       - "-c"

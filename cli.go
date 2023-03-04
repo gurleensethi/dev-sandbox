@@ -8,6 +8,7 @@ import (
 
 const (
 	FlagDisablePorts = "disable-ports"
+	FlagOpenVSCode   = "open-vscode"
 )
 
 func BuildCli(a *App) *cli.App {
@@ -46,6 +47,11 @@ func BuildCli(a *App) *cli.App {
 						Usage: "don't expose any ports on the container",
 						Value: false,
 					},
+					&cli.BoolFlag{
+						Name:  FlagOpenVSCode,
+						Usage: "open container code in VSCode",
+						Value: false,
+					},
 				},
 				Usage: "run a sandbox",
 				Action: func(cCtx *cli.Context) error {
@@ -54,8 +60,9 @@ func BuildCli(a *App) *cli.App {
 					}
 
 					template := cCtx.Args().First()
-					return a.RunContainer(cCtx.Context, template, RunContainerOpts{
+					return a.RunSandbox(cCtx.Context, template, RunSandboxOpts{
 						DisablePorts: cCtx.Bool(FlagDisablePorts),
+						OpenVSCode:   cCtx.Bool(FlagOpenVSCode),
 					})
 				},
 			},

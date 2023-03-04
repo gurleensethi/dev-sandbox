@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
+	"path"
 	"sort"
 	"strings"
 	"text/tabwriter"
@@ -37,11 +39,12 @@ func NewApp(config SandboxConfig) (*App, error) {
 	}, nil
 }
 
-type RunContainerOpts struct {
+type RunSandboxOpts struct {
 	DisablePorts bool
+	OpenVSCode   bool
 }
 
-func (a *App) RunContainer(ctx context.Context, templateName string, opts RunContainerOpts) error {
+func (a *App) RunSandbox(ctx context.Context, templateName string, opts RunSandboxOpts) error {
 	sandboxTemplate, ok := a.sandboxConfig.Templates[templateName]
 	if !ok {
 		fmt.Printf("Sandbox template '%s' doesn't exists\n", os.Args[1])
@@ -59,7 +62,7 @@ func (a *App) RunContainer(ctx context.Context, templateName string, opts RunCon
 	containerName := fmt.Sprintf("dev-sandbox-%s-%s", strings.Join(strings.Split(sandboxTemplate.Name, " "), "_"), uniqueID)
 
 	// >>>>> Create and start container
-	logMessage(fmt.Sprintf("Creating container '%s'", containerName), colorYellow)
+	logMessage(fmt.Sprintf("Creating container '%s'...", containerName), colorGreen)
 
 	exposedPorts := nat.PortSet{}
 	portBindings := nat.PortMap{}
@@ -73,7 +76,7 @@ func (a *App) RunContainer(ctx context.Context, templateName string, opts RunCon
 					HostPort: port.HostPort,
 				},
 			}
-			logMessage(fmt.Sprintf("Mapping Container Port %s to Host Port %s", port.ConatinerPort, port.HostPort), colorYellow)
+			logMessage(fmt.Sprintf("Mapping Container Port %s to Host Port %s...", port.ConatinerPort, port.HostPort), colorGreen)
 		}
 	}
 
@@ -94,7 +97,7 @@ func (a *App) RunContainer(ctx context.Context, templateName string, opts RunCon
 		return err
 	}
 
-	logMessage(fmt.Sprintf("Starting Container '%s'", containerName), colorYellow)
+	logMessage(fmt.Sprintf("Starting Container '%s'...", containerName), colorGreen)
 
 	err = a.dockerCli.ContainerStart(ctx, container.ID, types.ContainerStartOptions{})
 	if err != nil {
@@ -102,7 +105,26 @@ func (a *App) RunContainer(ctx context.Context, templateName string, opts RunCon
 		return err
 	}
 
-	logMessage(fmt.Sprintf("Container '%s' started successfully", containerName), colorYellow)
+	logMessage(fmt.Sprintf("Container '%s' started successfully...", containerName), colorGreen)
+
+	// >>>>> Open VSCode attaching the remote container
+	if opts.OpenVSCode && sandboxTemplate.VSCodeConfig != nil {
+		logMessage("Opening container application in VSCode...", colorGreen)
+		applicationPath := path.Join("/", sandboxTemplate.VSCodeConfig.ApplicationFolder)
+
+		if hasCommand("code") == nil {
+			err := exec.Command(
+				"code",
+				"--folder-uri",
+				fmt.Sprintf("vscode-remote://attached-container+%x%s", containerName, applicationPath),
+			).Run()
+			if err != nil {
+				return err
+			}
+		} else {
+			logMessage("Unable to open container in VSCode, 'code' command not found!", colorYellow)
+		}
+	}
 
 	// >>>>> Render post run message using go templates.
 	t, err := template.New("post_message_render").Parse(sandboxTemplate.Messages.PostStart)
