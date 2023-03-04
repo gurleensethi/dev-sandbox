@@ -12,7 +12,8 @@ const (
 
 func BuildCli(a *App) *cli.App {
 	return &cli.App{
-		Name: "dev-sandbox",
+		Name:  "dev-sandbox",
+		Usage: "run predefined sandbox templates in docker containers",
 		Commands: []*cli.Command{
 			{
 				Name:  "doctor",
