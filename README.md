@@ -10,7 +10,7 @@ go install github.com/gurleensethi/dev-sandbox@latest
 
 # Usage
 
-```bash
+```text
 NAME:
    dev-sandbox - A new cli application
 
@@ -29,6 +29,8 @@ COMMANDS:
 GLOBAL OPTIONS:
    --help, -h  show help
 ```
+
+Run the `dev-sandbox doctor` command to check for system requirements.
 
 <img alt="Welcome to VHS" src="https://raw.githubusercontent.com/gurleensethi/dev-sandbox/main/out.gif" />
 
