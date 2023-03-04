@@ -19,3 +19,13 @@ dev-sandbox list
 ```
 
 <img alt="Welcome to VHS" src="https://raw.githubusercontent.com/gurleensethi/dev-sandbox/main/out.gif" />
+
+# Templates
+
+| Name | Description |
+| ---- | ----------- |
+| react | React application generated using vite.
+| golang |  |
+| go-web-app |  |
+| nodejs |  |
+| postgres |  |
