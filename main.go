@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -34,7 +35,13 @@ func main() {
 			panic(err)
 		}
 
-		fmt.Println(err.Error())
+		errStr := err.Error()
+		errStr = strings.ToUpper(errStr[:1]) + errStr[1:]
+		if errStr[len(errStr)-1] != '.' {
+			errStr += "."
+		}
+
+		fmt.Println(errStr)
 		os.Exit(1)
 	}
 }

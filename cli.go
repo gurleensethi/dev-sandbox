@@ -46,9 +46,20 @@ func BuildCli(a *App) *cli.App {
 			},
 			{
 				Name:  "purge",
-				Usage: "delete running sandboxes",
+				Usage: "delete all running sandboxes",
 				Action: func(ctx *cli.Context) error {
 					return a.PurgeDevSandboxes(ctx.Context)
+				},
+			},
+			{
+				Name:    "delete",
+				Usage:   "delete a sandbox",
+				Aliases: []string{"rm"},
+				Action: func(ctx *cli.Context) error {
+					sandboxName := ctx.Args().Get(0)
+					return a.DeleteSandbox(ctx.Context, DeleteSandboxOpts{
+						SandboxName: sandboxName,
+					})
 				},
 			},
 		},

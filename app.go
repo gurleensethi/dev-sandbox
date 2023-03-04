@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -174,7 +175,7 @@ func (a *App) PurgeDevSandboxes(ctx context.Context) error {
 	}
 
 	for _, c := range conatiners {
-		logMessage(fmt.Sprintf("Removing container %s", strings.Join(c.Names, " ")), colorYellow)
+		logMessage(fmt.Sprintf("Deleting sandbox %s", strings.Join(c.Names, "")), colorYellow)
 
 		err := a.dockerCli.ContainerRemove(ctx, c.ID, types.ContainerRemoveOptions{
 			Force: true,
@@ -182,6 +183,47 @@ func (a *App) PurgeDevSandboxes(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+type DeleteSandboxOpts struct {
+	SandboxName string
+}
+
+func (a *App) DeleteSandbox(ctx context.Context, opts DeleteSandboxOpts) error {
+	if strings.TrimSpace(opts.SandboxName) == "" {
+		return errors.New("provide a sandbox name to delete")
+	}
+
+	containers, err := a.dockerCli.ContainerList(ctx, types.ContainerListOptions{
+		Filters: filters.NewArgs(filters.KeyValuePair{
+			Key:   "name",
+			Value: "^" + opts.SandboxName + "$",
+		}),
+	})
+	if err != nil {
+		return err
+	}
+
+	if len(containers) == 0 {
+		return errors.New("no container found with the provided name")
+	}
+
+	if len(containers) > 1 {
+		return errors.New("multiple containers found with name")
+	}
+
+	container := containers[0]
+
+	logMessage(fmt.Sprintf("Deleteing sandbox '%s'", strings.Join(container.Names, "")), colorYellow)
+
+	err = a.dockerCli.ContainerRemove(ctx, container.ID, types.ContainerRemoveOptions{
+		Force: true,
+	})
+	if err != nil {
+		return err
 	}
 
 	return nil
