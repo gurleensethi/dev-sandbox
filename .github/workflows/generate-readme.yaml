@@ -17,5 +17,12 @@ jobs:
           echo $PWD
           ls
           export TEMPLATES=$(yq -M eval '.templates[] | "| " + key + " | " + .description // "" + " |"' sandbox-config.yaml)
-          echo $TEMPLATES
-          envsubst < _README.md
+          envsubst < _README.md > README.md
+
+      - name: Commit & Push
+        run: |
+          git config --global user.name "Github Actions Bot"
+          git config --global user.email "gurleensethi@users.noreply.github.com"
+          git add README.md
+          git commit -m "docs: generate README.md"
+          git push origin main
