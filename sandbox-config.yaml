@@ -42,7 +42,11 @@ templates:
         cat > main.go << EOF
         package main
 
-        func main() {}
+        import "fmt"
+
+        func main() {
+          fmt.Println("Hello Go Sandbox")
+        }
         EOF
 
         sleep 100000
