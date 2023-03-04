@@ -39,7 +39,8 @@ jobs:
         run: |
           git config user.name "Github Actions Bot"
           git config user.email "github-actions@github.com"
-          if [ -z "$(git status --porcelain)" ]; then                                                                                                                          [17:25:07]
+          if [[ -z "$(git status --porcelain)" ]]
+          then
             echo "No changes to README.md found"
           else
             git add README.md
