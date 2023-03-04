@@ -15,6 +15,7 @@ jobs:
       - name: Replace Templates
         run: |
           echo $PWD
-          export TEMPLATES=$(yq -M eval '.templates[] | "- " + key + " - " + .description // ""' sandbox-config.yaml)
+          ls
+          export TEMPLATES=$(yq -M eval '.templates[] | "| " + key + " | " + .description // "" + " |"' sandbox-config.yaml)
           echo $TEMPLATES
           envsubst < _README.md

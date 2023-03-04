@@ -22,4 +22,6 @@ dev-sandbox list
 
 # Templates
 
+| Name | Description |
+| ---- | ----------- |
 ${TEMPLATES}
