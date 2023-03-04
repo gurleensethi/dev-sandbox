@@ -40,7 +40,7 @@ templates:
         go install -v golang.org/x/tools/gopls@latest
 
         cd /playground-golang
-        go mod init playground-golang        
+        go mod init playground-golang
 
         touch main.go
         cat > main.go << EOF

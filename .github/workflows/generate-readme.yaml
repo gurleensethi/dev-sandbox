@@ -39,6 +39,10 @@ jobs:
         run: |
           git config user.name "Github Actions Bot"
           git config user.email "github-actions@github.com"
-          git add README.md
-          git commit -m "docs: generate README.md"
-          git push origin main
+          if [ -z "$(git status --porcelain)" ]; then                                                                                                                          [17:25:07]
+            echo "No changes to README.md found"
+          else
+            git add README.md
+            git commit -m "docs: generate README.md"
+            git push origin main
+          fi
