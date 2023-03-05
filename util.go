@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os/exec"
+	"text/template"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/pkg/errors"
@@ -49,4 +51,20 @@ func hasCommand(cmd string) error {
 		return ErrCommandNotFound
 	}
 	return nil
+}
+
+func renderTemplate(templateData string, data any) (string, error) {
+	// >>>>> Render post run message using go templates.
+	t, err := template.New("template").Parse(templateData)
+	if err != nil {
+		return "", err
+	}
+
+	buff := bytes.NewBuffer([]byte{})
+	err = t.Execute(buff, data)
+	if err != nil {
+		return "", err
+	}
+
+	return buff.String(), nil
 }

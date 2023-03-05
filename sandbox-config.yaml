@@ -18,13 +18,6 @@ templates:
       postStart: |
         Container might take a few seconds to be ready.
 
-        > Open in VSCode:
-
-        1. Open VSCode.
-        2. Cmd+Shift+P
-        3. Search for 'Dev Containers: Attach to a running container...'
-        4. Select '{{.ContainerName}}' container.
-
   golang:
     name: golang
     description: Go application (with module initalized).
@@ -60,13 +53,6 @@ templates:
     messages:
       postStart: |
         Container might take a few seconds to be ready.
-
-        > Open in VSCode:
-
-        1. Open VSCode.
-        2. Cmd+Shift+P
-        3. Search for 'Dev Containers: Attach to a running container...'
-        4. Select '{{.ContainerName}}' container.
 
   go-web-app:
     name: go-web-app
@@ -120,13 +106,6 @@ templates:
 
         Project created in `/playground-golang` folder.
 
-        > Open in VSCode:
-
-        1. Open VSCode
-        2. Cmd+Shift+P
-        3. Search for 'Dev Containers: Attach to a running container...'
-        4. Select '{{.ContainerName}}' container
-
   nodejs:
     name: nodejs
     image: node:latest
@@ -150,13 +129,6 @@ templates:
       postStart: |
         Container might take a few seconds to be ready.
 
-        > Open in VSCode:
-
-        1. Open VSCode.
-        2. Cmd+Shift+P
-        3. Search for 'Dev Containers: Attach to a running container...'
-        4. Select '{{.ContainerName}}' container.
-
   postgres:
     name: postgres
     image: postgres:latest
@@ -175,10 +147,3 @@ templates:
         Postgres Database: postgres
 
         Container might take a few seconds to be ready.
-
-        > Open in VSCode:
-
-        1. Open VSCode.
-        2. Cmd+Shift+P
-        3. Search for 'Dev Containers: Attach to a running container...'
-        4. Select '{{.ContainerName}}' container.

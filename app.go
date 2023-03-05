@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -11,7 +10,6 @@ import (
 	"sort"
 	"strings"
 	"text/tabwriter"
-	"text/template"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/docker/docker/api/types"
@@ -20,6 +18,14 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
 	"github.com/google/uuid"
+)
+
+var (
+	MsgOpenVSCodeSteps = `> Open in VSCode:
+1. Open VSCode.
+2. Cmd+Shift+P
+3. Search for 'Dev Containers: Attach to a running container...'
+4. Select '{{.ContainerName}}' container.`
 )
 
 type App struct {
@@ -107,6 +113,15 @@ func (a *App) RunSandbox(ctx context.Context, templateName string, opts RunSandb
 
 	logMessage(fmt.Sprintf("Container '%s' started successfully...", containerName), colorGreen)
 
+	templateData := map[string]string{
+		"ContainerName": containerName,
+	}
+
+	vscodeSteps, err := renderTemplate(MsgOpenVSCodeSteps, templateData)
+	if err != nil {
+		return err
+	}
+
 	// >>>>> Open VSCode attaching the remote container
 	if opts.OpenVSCode {
 		if sandboxTemplate.VSCodeConfig != nil {
@@ -124,25 +139,20 @@ func (a *App) RunSandbox(ctx context.Context, templateName string, opts RunSandb
 				}
 			} else {
 				logMessage("Unable to open container in VSCode, 'code' command not found!", colorYellow)
+				logMessage(vscodeSteps, colorYellow)
 			}
 		}
+	} else {
+		logMessage("\n"+vscodeSteps, colorOrgange)
 	}
 
 	// >>>>> Render post run message using go templates.
-	t, err := template.New("post_message_render").Parse(sandboxTemplate.Messages.PostStart)
+	postStartMsg, err := renderTemplate(sandboxTemplate.Messages.PostStart, templateData)
 	if err != nil {
 		return err
 	}
 
-	buff := bytes.NewBuffer([]byte{})
-	err = t.Execute(buff, map[string]string{
-		"ContainerName": containerName,
-	})
-	if err != nil {
-		return err
-	}
-
-	logMessage("\n"+buff.String(), colorOrgange)
+	logMessage("\n"+postStartMsg, colorOrgange)
 
 	return nil
 }
