@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path"
@@ -64,10 +65,36 @@ func (a *App) RunSandbox(ctx context.Context, templateName string, opts RunSandb
 
 	logHeader(fmt.Sprintf("Docker API Version: %s\nTemplate: %s", ping.APIVersion, sandboxTemplate.Name))
 
+	// >>>>> Pull Image
+	images, err := a.dockerCli.ImageList(ctx, types.ImageListOptions{
+		Filters: filters.NewArgs(filters.KeyValuePair{
+			Key:   "reference",
+			Value: sandboxTemplate.Image,
+		}),
+	})
+	if err != nil {
+		return err
+	}
+
+	if len(images) == 0 {
+		logMessage(fmt.Sprintf("Pulling image %s...", sandboxTemplate.Image), colorGreen)
+
+		reader, err := a.dockerCli.ImagePull(ctx, sandboxTemplate.Image, types.ImagePullOptions{})
+		if err != nil {
+			return err
+		}
+
+		_, err = io.ReadAll(reader)
+		if err != nil {
+			return err
+		}
+	}
+
+	// >>>>> Create and start container
+
 	uniqueID := uuid.NewString()[:6]
 	containerName := fmt.Sprintf("dev-sandbox-%s-%s", strings.Join(strings.Split(sandboxTemplate.Name, " "), "_"), uniqueID)
 
-	// >>>>> Create and start container
 	logMessage(fmt.Sprintf("Creating container '%s'...", containerName), colorGreen)
 
 	exposedPorts := nat.PortSet{}
