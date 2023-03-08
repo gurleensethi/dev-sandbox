@@ -18,13 +18,13 @@ USAGE:
    dev-sandbox [global options] command [command options] [arguments...]
 
 COMMANDS:
-   doctor                        check for all requirements on your system
-   list-templates, ls-templates  list all the available templates
-   list, ls                      list all the dev sandboxes
-   run, r                        run a sandbox
-   purge                         delete all running sandboxes
-   delete, rm                    delete a sandbox
-   help, h                       Shows a list of commands or help for one command
+   doctor               check for all requirements on your system
+   list-templates, lst  list all the available templates
+   list, ls             list all the dev sandboxes
+   run, r               run a sandbox
+   purge                delete all running sandboxes
+   delete, rm           delete a sandbox
+   help, h              Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
    --help, -h  show help
