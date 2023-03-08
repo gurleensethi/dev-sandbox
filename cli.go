@@ -25,7 +25,7 @@ func BuildCli(a *App) *cli.App {
 			},
 			{
 				Name:    "list-templates",
-				Aliases: []string{"ls-templates"},
+				Aliases: []string{"lst"},
 				Usage:   "list all the available templates",
 				Action: func(ctx *cli.Context) error {
 					return a.ListTemplates(ctx.Context)
