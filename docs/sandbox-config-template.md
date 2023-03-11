@@ -9,6 +9,8 @@ golang:
   image: golang:latest
   vscodeConfig:
     applicationFolder: /playground-golang
+  environment:
+    - "KEY=VALUE"
   initCommand:
     - bash
     - "-c"
@@ -62,6 +64,11 @@ golang:
 - **vscodeConfig.applicationFolder**
 
   - Folder to open when opening the container in VSCode.
+
+- **environment**
+
+  - Set environment variables.
+  - Format: `KEY=VALUE`.
 
 - **ports**
 
