@@ -60,4 +60,18 @@ golang:
   - Format: `iamge:tag`
 
 - **vscodeConfig.applicationFolder**
+
   - Folder to open when opening the container in VSCode.
+
+- **ports**
+
+  - Expose docker container port to host port.
+
+- **messages**
+
+  - Lifecycle messages that can be displayed throughout running the container.
+  - Messages are go templates and following data is available for use:
+    - `ContainerName`: Name of the docker container.
+
+- **messages.postStart**
+  - Message displayed after starting the container. Add any special information here. For example, postgres sandbox uses this to display the username, password and database.
