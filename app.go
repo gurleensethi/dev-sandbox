@@ -27,6 +27,9 @@ var (
 2. Cmd+Shift+P
 3. Search for 'Dev Containers: Attach to a running container...'
 4. Select '{{.ContainerName}}' container.`
+
+	CmdCode   = "code"
+	CmdDocker = "docker"
 )
 
 type App struct {
@@ -155,9 +158,9 @@ func (a *App) RunSandbox(ctx context.Context, templateName string, opts RunSandb
 			logMessage("Opening container application in VSCode...", colorGreen)
 			applicationPath := path.Join("/", sandboxTemplate.VSCodeConfig.ApplicationFolder)
 
-			if hasCommand("code") == nil {
+			if hasCommand(CmdCode) == nil {
 				err := exec.Command(
-					"code",
+					CmdCode,
 					"--folder-uri",
 					fmt.Sprintf("vscode-remote://attached-container+%x%s", containerName, applicationPath),
 				).Run()
@@ -331,8 +334,8 @@ func (a *App) ListTemplates(ctx context.Context) error {
 
 func (a *App) Doctor(ctx context.Context) error {
 	commands := map[string]string{
-		"docker": "Visit 'https://www.docker.com/products/docker-desktop/' to install Docker.",
-		"code":   "Visit 'https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line' to install VSCode shell command.",
+		CmdDocker: "Visit 'https://www.docker.com/products/docker-desktop/' to install Docker.",
+		CmdCode:   "Visit 'https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line' to install VSCode shell command.",
 	}
 
 	for cmd, instructions := range commands {
