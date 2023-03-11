@@ -38,8 +38,8 @@ Run the `dev-sandbox doctor` command to check for system requirements.
 
 | Name | Description |
 | ---- | ----------- |
-| react | React application generated using vite.
 | golang | Go application (with module initalized).
-| go-web-app |  |
+| golang-web-app |  |
 | nodejs | Nodejs environment.
 | postgres | Postgres database.
+| react | React application generated using vite.
