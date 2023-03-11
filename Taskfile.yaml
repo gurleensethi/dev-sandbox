@@ -3,4 +3,4 @@ version: 3
 tasks:
   generate-sandbox-config:
     cmds:
-      - go run ./internal/tools/config-generator -config-folder=./sandbox-configs -config-file-out=./sandbox-config.yaml
+      - go run ./internal/tools/config-generator -config-folder=./sandbox-templates -config-file-out=./sandbox-config.yaml
