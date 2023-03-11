@@ -1,0 +1,21 @@
+name: nodejs
+image: node:latest
+description: Nodejs environment.
+initCommand:
+  - bash
+  - "-c"
+  - |
+    mkdir -p /node-playground
+    cd /node-playground
+    touch main.js
+    cat > main.js << EOF
+    console.log("Hello World");
+    EOF
+
+    tail -f /dev/null
+ports:
+  - containerPort: 4444
+    hostPort: 4444
+messages:
+  postStart: |
+    Container might take a few seconds to be ready.

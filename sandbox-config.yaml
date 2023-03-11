@@ -1,149 +1,144 @@
 templates:
-  react:
-    name: react
-    image: node:latest
-    description: React application generated using vite.
-    initCommand:
-      - bash
-      - "-c"
-      - |
-        npm create -y vite@latest playground-react-app -- --template react
-        cd playground-react-app
-        npm install
-        npm run dev -- --port 3000 --host
-    ports:
-      - containerPort: 3000
-        hostPort: 3000
-    messages:
-      postStart: |
-        Container might take a few seconds to be ready.
-
   golang:
-    name: golang
     description: Go application (with module initalized).
     image: golang:latest
-    vscodeConfig:
-      applicationFolder: /playground-golang
     initCommand:
-      - bash
-      - "-c"
-      - |
-        mkdir -p /playground-golang
+    - bash
+    - -c
+    - |
+      mkdir -p /playground-golang
 
-        go install -v golang.org/x/tools/gopls@latest
+      go install -v golang.org/x/tools/gopls@latest
 
-        cd /playground-golang
-        go mod init playground-golang
+      cd /playground-golang
+      go mod init playground-golang
 
-        touch main.go
-        cat > main.go << EOF
-        package main
+      touch main.go
+      cat > main.go << EOF
+      package main
 
-        import "fmt"
+      import "fmt"
 
-        func main() {
-          fmt.Println("Hello Go Sandbox")
-        }
-        EOF
+      func main() {
+        fmt.Println("Hello Go Sandbox")
+      }
+      EOF
 
-        tail -f /dev/null
-    ports:
-      - containerPort: 8888
-        hostPort: 8888
+      tail -f /dev/null
     messages:
       postStart: |
         Container might take a few seconds to be ready.
-
-  go-web-app:
-    name: go-web-app
+    name: golang
+    ports:
+    - containerPort: 8888
+      hostPort: 8888
+    vscodeConfig:
+      applicationFolder: /playground-golang
+  golang-web-app:
+    environment:
+    - HTTP_PORT=9999
     image: golang:latest
     initCommand:
-      - bash
-      - "-c"
-      - |
-        mkdir -p /playground-golang
+    - bash
+    - -c
+    - |
+      mkdir -p /playground-golang
 
-        go install -v golang.org/x/tools/gopls@latest
-        go install github.com/cosmtrek/air@latest
+      go install -v golang.org/x/tools/gopls@latest
+      go install github.com/cosmtrek/air@latest
 
-        cd /playground-golang
-        go mod init playground-golang
+      cd /playground-golang
+      go mod init playground-golang
 
-        touch main.go
-        cat > main.go << EOF
-        package main
+      touch main.go
+      cat > main.go << EOF
+      package main
 
-        import (
-          "fmt"
-          "net/http"
-          "os"
-        )
+      import (
+        "fmt"
+        "net/http"
+        "os"
+      )
 
-        func main() {
-          http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
-            w.Header().Set("Content-Type", "application/json")
+      func main() {
+        http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+          w.Header().Set("Content-Type", "application/json")
 
-            _, err := w.Write([]byte("{ \"message\": \"Hello World\" }"))
-            if err != nil {
-              fmt.Println(err)
-            }
-          })
+          _, err := w.Write([]byte("{ \"message\": \"Hello World\" }"))
+          if err != nil {
+            fmt.Println(err)
+          }
+        })
 
-          addr := fmt.Sprintf(":%v", os.Getenv("HTTP_PORT"))
-          http.ListenAndServe(addr, nil)
-        }
-        EOF
+        addr := fmt.Sprintf(":%v", os.Getenv("HTTP_PORT"))
+        http.ListenAndServe(addr, nil)
+      }
+      EOF
 
-        air
-    ports:
-      - containerPort: 9999
-        hostPort: 9999
-    environment:
-      - "HTTP_PORT=9999"
+      air
     messages:
-      postStart: |
+      postStart: |-
         Container might take a few seconds to be ready.
 
         Project created in `/playground-golang` folder.
-
+    name: go-web-app
+    ports:
+    - containerPort: 9999
+      hostPort: 9999
   nodejs:
-    name: nodejs
-    image: node:latest
     description: Nodejs environment.
+    image: node:latest
     initCommand:
-      - bash
-      - "-c"
-      - |
-        mkdir -p /node-playground
-        cd /node-playground
-        touch main.js
-        cat > main.js << EOF
-        console.log("Hello World");
-        EOF
+    - bash
+    - -c
+    - |
+      mkdir -p /node-playground
+      cd /node-playground
+      touch main.js
+      cat > main.js << EOF
+      console.log("Hello World");
+      EOF
 
-        tail -f /dev/null
-    ports:
-      - containerPort: 4444
-        hostPort: 4444
+      tail -f /dev/null
     messages:
-      postStart: |
-        Container might take a few seconds to be ready.
-
+      postStart: Container might take a few seconds to be ready.
+    name: nodejs
+    ports:
+    - containerPort: 4444
+      hostPort: 4444
   postgres:
-    name: postgres
-    image: postgres:latest
     description: Postgres database.
-    ports:
-      - containerPort: 5432
-        hostPort: 5432
     environment:
-      - "POSTGRES_USER=postgres"
-      - "POSTGRES_PASSWORD=postgres"
-      - "POSTGRES_DB=postgres"
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
+    - POSTGRES_DB=postgres
+    image: postgres:latest
     messages:
-      postStart: |
+      postStart: |-
         Postgres User: postgres
         Postgres Password: postgres
         Postgres Database: postgres
 
         Container might take a few seconds to be ready.
+    name: postgres
+    ports:
+    - containerPort: 5432
+      hostPort: 5432
+  react:
+    description: React application generated using vite.
+    image: node:latest
+    initCommand:
+    - bash
+    - -c
+    - |
+      npm create -y vite@latest playground-react-app -- --template react
+      cd playground-react-app
+      npm install
+      npm run dev -- --port 3000 --host
+    messages:
+      postStart: |
+        Container might take a few seconds to be ready.
+    name: react
+    ports:
+    - containerPort: 3000
+      hostPort: 3000

@@ -1,0 +1,34 @@
+name: golang
+description: Go application (with module initalized).
+image: golang:latest
+vscodeConfig:
+  applicationFolder: /playground-golang
+initCommand:
+  - bash
+  - "-c"
+  - |
+    mkdir -p /playground-golang
+
+    go install -v golang.org/x/tools/gopls@latest
+
+    cd /playground-golang
+    go mod init playground-golang
+
+    touch main.go
+    cat > main.go << EOF
+    package main
+
+    import "fmt"
+
+    func main() {
+      fmt.Println("Hello Go Sandbox")
+    }
+    EOF
+
+    tail -f /dev/null
+ports:
+  - containerPort: 8888
+    hostPort: 8888
+messages:
+  postStart: |
+    Container might take a few seconds to be ready.

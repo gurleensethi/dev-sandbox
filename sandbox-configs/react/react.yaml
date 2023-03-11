@@ -1,0 +1,17 @@
+name: react
+image: node:latest
+description: React application generated using vite.
+initCommand:
+  - bash
+  - "-c"
+  - |
+    npm create -y vite@latest playground-react-app -- --template react
+    cd playground-react-app
+    npm install
+    npm run dev -- --port 3000 --host
+ports:
+  - containerPort: 3000
+    hostPort: 3000
+messages:
+  postStart: |
+    Container might take a few seconds to be ready.
