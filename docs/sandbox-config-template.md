@@ -31,7 +31,8 @@ golang:
       }
       EOF
 
-      sleep 100000
+      # Sleep forever
+      tail -f /dev/null
   ports:
     - containerPort: 8888
       hostPort: 8888

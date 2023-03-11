@@ -46,7 +46,7 @@ templates:
         }
         EOF
 
-        sleep 100000
+        tail -f /dev/null
     ports:
       - containerPort: 8888
         hostPort: 8888
@@ -121,7 +121,7 @@ templates:
         console.log("Hello World");
         EOF
 
-        sleep 100000
+        tail -f /dev/null
     ports:
       - containerPort: 4444
         hostPort: 4444
