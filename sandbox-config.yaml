@@ -142,3 +142,47 @@ templates:
     ports:
     - containerPort: 3000
       hostPort: 3000
+  vanilla-javascript:
+    description: A vanilla html/css/javascript environment.
+    image: node:latest
+    initCommand:
+    - bash
+    - -c
+    - |
+      # Install global deps
+      npm install -g live-server
+
+      # Setup sandbox files
+      mkdir -p /sandbox
+      cd /sandbox
+      touch index.html styles.css script.js
+
+      cat > index.html << EOF
+      <html>
+      <head>
+        <link href="styles.css" rel="stylesheet" />
+      </head>
+
+      <body>
+        <h1>Hello from sandbox!</h1>
+        <script src="script.js">
+        </script>
+      </body>
+
+      </html>
+      EOF
+
+      cat > script.js << EOF
+      console.log("Hello from sandbox!")
+      EOF
+
+      live-server --port=4343 .
+    messages:
+      postStart: |
+        Container might take a few seconds to be ready.
+    name: vanilla-javascript
+    ports:
+    - containerPort: 4343
+      hostPort: 4343
+    vscodeConfig:
+      applicationFolder: /sandbox
