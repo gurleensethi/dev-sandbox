@@ -43,3 +43,4 @@ Run the `dev-sandbox doctor` command to check for system requirements.
 | nodejs | Nodejs environment.
 | postgres | Postgres database.
 | react | React application generated using vite.
+| vanilla-javascript | A vanilla html/css/javascript environment.
