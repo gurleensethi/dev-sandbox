@@ -144,7 +144,7 @@ func (a *App) RunSandbox(ctx context.Context, templateName string, opts RunSandb
 
 	logMessage(fmt.Sprintf("Container '%s' started successfully...", containerName), colorGreen)
 
-	logMessage(fmt.Sprintf("Attaching container '%s' to dev-sandbox network...", containerName), colorGreen)
+	logMessage(fmt.Sprintf("Attaching container '%s' to %s network...", containerName, DockerNetworkName), colorGreen)
 
 	networkID, err := a.ensureDockerNetwork(ctx)
 	if err != nil {
@@ -259,6 +259,24 @@ func (a *App) PurgeDevSandboxes(ctx context.Context) error {
 		err := a.dockerCli.ContainerRemove(ctx, c.ID, types.ContainerRemoveOptions{
 			Force: true,
 		})
+		if err != nil {
+			return err
+		}
+	}
+
+	networks, err := a.dockerCli.NetworkList(ctx, types.NetworkListOptions{
+		Filters: filters.NewArgs(filters.KeyValuePair{
+			Key:   "label",
+			Value: "label=dev.sandbox.network",
+		}),
+	})
+	if err != nil {
+		return err
+	}
+
+	for _, n := range networks {
+		logMessage(fmt.Sprintf("Deleting network %s", n.Name), colorYellow)
+		err := a.dockerCli.NetworkRemove(ctx, n.ID)
 		if err != nil {
 			return err
 		}
@@ -381,6 +399,8 @@ func (a *App) ensureDockerNetwork(ctx context.Context) (string, error) {
 	if len(networks) > 0 {
 		return networks[0].ID, nil
 	}
+
+	logMessage(fmt.Sprintf("Creating network %s...", DockerNetworkName), colorGreen)
 
 	network, err := a.dockerCli.NetworkCreate(ctx, DockerNetworkName, types.NetworkCreate{
 		Labels: map[string]string{
