@@ -23,3 +23,9 @@ Run the `dev-sandbox doctor` command to check for system requirements.
 | Name | Description |
 | ---- | ----------- |
 ${TEMPLATES}
+
+# Contribution
+
+PS: I build this tiny tool for myself, to quickly spin up programming sandboxes and open then in VSCode.
+
+Contribtion is welcome, specially contributing more sandbox templates.
