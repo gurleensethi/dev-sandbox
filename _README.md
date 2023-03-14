@@ -26,6 +26,6 @@ ${TEMPLATES}
 
 # Contribution
 
-PS: I build this tiny tool for myself, to quickly spin up programming sandboxes and open then in VSCode.
+PS: I built this tiny tool for myself, to quickly spin up programming sandboxes and open then in VSCode.
 
 Contribtion is welcome, specially contributing more sandbox templates.
