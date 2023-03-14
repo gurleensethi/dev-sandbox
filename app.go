@@ -30,6 +30,8 @@ var (
 
 	CmdCode   = "code"
 	CmdDocker = "docker"
+
+	DockerNetworkName = "dev-sandbox-network"
 )
 
 type App struct {
@@ -94,7 +96,6 @@ func (a *App) RunSandbox(ctx context.Context, templateName string, opts RunSandb
 	}
 
 	// >>>>> Create and start container
-
 	uniqueID := uuid.NewString()[:6]
 	containerName := fmt.Sprintf("dev-sandbox-%s-%s", strings.Join(strings.Split(sandboxTemplate.Name, " "), "_"), uniqueID)
 
@@ -142,6 +143,18 @@ func (a *App) RunSandbox(ctx context.Context, templateName string, opts RunSandb
 	}
 
 	logMessage(fmt.Sprintf("Container '%s' started successfully...", containerName), colorGreen)
+
+	logMessage(fmt.Sprintf("Attaching container '%s' to dev-sandbox network...", containerName), colorGreen)
+
+	networkID, err := a.ensureDockerNetwork(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = a.dockerCli.NetworkConnect(ctx, networkID, container.ID, nil)
+	if err != nil {
+		return err
+	}
 
 	templateData := map[string]string{
 		"ContainerName": containerName,
@@ -352,4 +365,31 @@ func (a *App) Doctor(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func (a *App) ensureDockerNetwork(ctx context.Context) (string, error) {
+	networks, err := a.dockerCli.NetworkList(ctx, types.NetworkListOptions{
+		Filters: filters.NewArgs(filters.KeyValuePair{
+			Key:   "label",
+			Value: "label=dev.sandbox.network",
+		}),
+	})
+	if err != nil {
+		return "", err
+	}
+
+	if len(networks) > 0 {
+		return networks[0].ID, nil
+	}
+
+	network, err := a.dockerCli.NetworkCreate(ctx, DockerNetworkName, types.NetworkCreate{
+		Labels: map[string]string{
+			"label": "dev.sandbox.network",
+		},
+	})
+	if err != nil {
+		return "", err
+	}
+
+	return network.ID, nil
 }
