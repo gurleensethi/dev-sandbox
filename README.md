@@ -44,3 +44,9 @@ Run the `dev-sandbox doctor` command to check for system requirements.
 | postgres | Postgres database.
 | react | React application generated using vite.
 | vanilla-javascript | A vanilla html/css/javascript environment.
+
+# Contribution
+
+PS: I build this tiny tool for myself, to quickly spin up programming sandboxes and open then in VSCode.
+
+Contribtion is welcome, specially contributing more sandbox templates.
