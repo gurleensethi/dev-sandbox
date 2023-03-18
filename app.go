@@ -172,6 +172,7 @@ func (a *App) RunSandbox(ctx context.Context, templateName string, opts RunSandb
 			applicationPath := path.Join("/", sandboxTemplate.VSCodeConfig.ApplicationFolder)
 
 			if hasCommand(CmdCode) == nil {
+				// code --folder-uri vscode-remote://attached-container+<container_name_hex>/<application_path>
 				err := exec.Command(
 					CmdCode,
 					"--folder-uri",
