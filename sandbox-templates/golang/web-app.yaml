@@ -1,4 +1,5 @@
 name: go-web-app
+description: A simple Go web app.
 image: golang:latest
 initCommand:
   - bash

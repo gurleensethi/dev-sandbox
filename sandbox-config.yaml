@@ -35,6 +35,7 @@ templates:
     vscodeConfig:
       applicationFolder: /playground-golang
   golang-web-app:
+    description: A simple Go web app.
     environment:
     - HTTP_PORT=9999
     image: golang:latest
