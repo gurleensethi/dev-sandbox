@@ -39,7 +39,7 @@ Run the `dev-sandbox doctor` command to check for system requirements.
 | Name | Description |
 | ---- | ----------- |
 | golang | Go application (with module initalized).
-| golang-web-app |  |
+| golang-web-app | A simple Go web app.
 | nodejs | Nodejs environment.
 | postgres | Postgres database.
 | react | React application generated using vite.
