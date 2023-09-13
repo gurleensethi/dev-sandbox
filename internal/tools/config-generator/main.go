@@ -48,19 +48,14 @@ func main() {
 	}
 
 	err = filepath.WalkDir(*configFolderPath, func(path string, d fs.DirEntry, err error) error {
-		if !d.IsDir() && filepath.Ext(d.Name()) == ".yaml" || filepath.Ext(d.Name()) == ".yml" {
+		// Read only files with extensions .yaml or .yml
+		if !d.IsDir() && (filepath.Ext(d.Name()) == ".yaml" || filepath.Ext(d.Name()) == ".yml") {
 			data, err := os.ReadFile(path)
 			if err != nil {
 				return err
 			}
 
-			fileNameWithoutExt := strings.Split(d.Name(), ".")[0] // golang.yaml -> golang
-			baseFolder := filepath.Base(filepath.Dir(path))       // sandbox-configs/golang/golang.yaml -> sandbox-configs/golang -> golang
-
-			sandboxConfigKey := baseFolder // golang
-			if fileNameWithoutExt != baseFolder {
-				sandboxConfigKey += "-" + fileNameWithoutExt // golang -> golang-web-app
-			}
+			templateName := getTemplateNameFromPath(d.Name(), path)
 
 			m := make(map[string]any)
 			err = yaml.NewDecoder(bytes.NewBuffer(data)).Decode(m)
@@ -68,7 +63,7 @@ func main() {
 				return err
 			}
 
-			sandboxTemplates["templates"][sandboxConfigKey] = m
+			sandboxTemplates["templates"][templateName] = m
 		}
 
 		return err
@@ -91,4 +86,19 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func getTemplateNameFromPath(filename, path string) string {
+	fileNameWithoutExt := strings.Split(filename, ".")[0] // golang.yaml -> golang
+	baseFolder := filepath.Base(filepath.Dir(path))       // sandbox-configs/golang/golang.yaml -> sandbox-configs/golang -> golang
+
+	templateName := baseFolder // golang
+
+	// In case the folder name is not same as the filename, append the
+	// filename to the folder name.
+	if fileNameWithoutExt != baseFolder {
+		templateName += "-" + fileNameWithoutExt // golang -> golang-web-app
+	}
+
+	return templateName
 }
